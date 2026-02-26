@@ -1,13 +1,15 @@
 from flask import Flask,render_template, request
 import joblib
 import numpy as np
+import pandas as pd
 
 app = Flask(__name__)
 
-popular_df = joblib.load(open('popular.joblib','rb'))
-pt = joblib.load(open('pt.joblib','rb'))
-books = joblib.load(open('books.joblib','rb'))
-similarity_scores = joblib.load(open('similarity_scores.joblib','rb'))
+popular_df = joblib.load(open('joblib/popular.joblib','rb'))
+pt = joblib.load(open('joblib/pt.joblib','rb'))
+# books = joblib.load(open('joblib/books.joblib','rb'))
+books = pd.read_csv('Modified Books.csv',low_memory=False)
+similarity_scores = joblib.load(open('joblib/similarity_scores.joblib','rb'))
 
 @app.route('/')
 def index():
@@ -47,4 +49,6 @@ def recommend():
     return render_template('recommend.html',data=data)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    import os
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
